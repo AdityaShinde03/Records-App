@@ -9,22 +9,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import ProfileScreen from "../screens/ProfileScreen";
+import ClientDetailsScreen from "../screens/ClientDetailsScreen";
 
 const StackNavigator = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
 
   function StackNav() {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="login" component={LoginScreen} />
-        <Stack.Screen name="home" component={HomeScreen} />
+        <Stack.Screen name="main" component={BottomTabs} />
+        <Stack.Screen name="clientDetails" component={ClientDetailsScreen} />
+        <Stack.Screen name="loginUser" component={LoginNav} />
       </Stack.Navigator>
     );
   }
 
   function BottomTabs() {
-    const Tab = createBottomTabNavigator();
     return (
       <Tab.Navigator
         screenOptions={{
@@ -37,6 +40,8 @@ const StackNavigator = () => {
           },
           tabBarActiveTintColor: "#2B9D64",
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
+          tabBarVisibilityAnimationConfig: false,
         }}
       >
         <Tab.Screen
@@ -51,7 +56,7 @@ const StackNavigator = () => {
 
         <Tab.Screen
           name="Profile"
-          component={HomeScreen}
+          component={ProfileScreen}
           options={{
             tabBarIcon: ({ color }) => {
               return <FontAwesome name="user" size={24} color={color} />;
@@ -61,30 +66,6 @@ const StackNavigator = () => {
       </Tab.Navigator>
     );
   }
-
-  // const LoginNav = () => {
-  //   return(
-  //   <Stack.Navigator screenOptions={{ headerShown: false }}>
-  //     <Stack.Screen
-  //       name="login"
-  //       component={LoginScreen}
-  //       options={{
-  //         headerShown: false,
-  //       }}
-  //     />
-  //     <Stack.Screen
-  //       name="register"
-  //       component={RegisterScreen}
-  //       options={{ headerShown: false }}
-  //     />
-  //     <Stack.Screen
-  //       name="main"
-  //       component={BottomTabs}
-  //       options={{ headerShown: false }}
-  //     />
-  //   </Stack.Navigator>
-  //   );
-  // };
 
   const getData = () => {
     const data = AsyncStorage.getItem("isLoggedIn");
@@ -96,22 +77,26 @@ const StackNavigator = () => {
     getData();
   }, []);
 
+  const LoginNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{headerShown:false}}>
+        <Stack.Screen name="login" component={LoginScreen} />
+        <Stack.Screen name="register" component={RegisterScreen} />
+      </Stack.Navigator>
+    );
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen
-              name="login"
-              component={LoginScreen}
-            />
-            <Stack.Screen
-              name="register"
-              component={RegisterScreen}
-
-            />
-            {isLoggedIn?<Stack.Screen
-            name="main"
-            component={BottomTabs}
-          />:<></>}
+        {isLoggedIn ? (
+          <Stack.Screen name="main" component={StackNav} />
+        ) : (
+          <>
+            <Stack.Screen name="login" component={LoginScreen} />
+            <Stack.Screen name="register" component={RegisterScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
