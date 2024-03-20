@@ -46,6 +46,6 @@ const styles = StyleSheet.create({
     marginVertical:5,
     borderRadius: 34,
     elevation:10,
-    shadowColor:"gray"
+    shadowColor:"#2B9D64"
   },
 });

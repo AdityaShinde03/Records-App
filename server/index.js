@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
+const Client = require("./models/client");
 
 const app = express();
 const PORT = 8000;
@@ -27,6 +28,7 @@ mongoose
     console.log("Failed to connect to MongoDB", err);
   });
 
+// Register Route **************************************************************
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -59,6 +61,7 @@ function secretKeyGenerator() {
 
 const JWT_SECRET = secretKeyGenerator();
 
+// login Route ****************************************************************
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -78,6 +81,38 @@ app.post("/login", async (req, res) => {
     }
   } catch (error) {
    return res.status(500).json({ message: "Login Failed!!!" });
+  }
+});
+
+// Get All Added Clients ************************************
+
+app.get("/client",async(req,res)=>{
+  const allClients = await Client.find({});
+  return res.send({allClients})
+})
+
+// Add New Client Route ********************************************************
+app.post("/client", async(req,res)=>{
+  try {
+    const {clientName,companyName,clientMobileNumber} = req.body;
+    
+    const existingCompany = await User.findOne({ companyName: companyName });
+
+    // if (existingCompany) {
+    //   return res.status(400).json({ message: "Client with same company name already added!!!" });
+    // } 
+
+   const newClient = await Client.create({
+      clientName:clientName,
+      companyName: companyName,
+      mobileNumber: clientMobileNumber,
+    });
+    return res
+      .status(200)
+      .json({ message: "Client added successfully!!!",newClient:newClient });
+  }catch(error){
+    console.log("Error while adding new client", error);
+    return res.status(500).json({ message: "Adding new client failed!!!" });
   }
 });
 
