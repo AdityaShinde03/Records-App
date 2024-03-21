@@ -1,10 +1,31 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+
+
+  const logoutHandler = async () => {
+    await AsyncStorage.setItem("isLoggedIn","").then(() => {
+      console.log("successfully removed token");
+    });
+    await AsyncStorage.removeItem("authToken");
+    // AsyncStorage.clear();
+    navigation.replace("loginUser");
+  };
+
+  
   return (
     <View style={{flex:1, backgroundColor:"#0F0F0F",alignItems:"center",justifyContent:"center"}}>
-      <Text style={{color:"white"}}>ProfileScreen</Text>
+      <Text style={{color:"white",textAlign:"center"}}>ProfileScreen</Text>
+      <Pressable
+          style={{width:100, padding: 10, backgroundColor: "#2B9D64",borderRadius:10 }}
+          onPress={logoutHandler}
+        >
+          <Text style={{ color: "white",textAlign:"center" }}>Logout</Text>
+        </Pressable>
     </View>
   )
 }

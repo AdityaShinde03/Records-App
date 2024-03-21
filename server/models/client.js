@@ -12,11 +12,14 @@ const clientSchema = new mongoose.Schema({
     mobileNumber:{
         type:String,
     },
-    orders:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"order"
-    },
-    // createdByUser:
+    // orders:{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref:"order"
+    // },
+    createdByUser:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"client"
+    }
 },{timestamps:true});
 
 const Client = mongoose.model("Client",clientSchema);

@@ -12,8 +12,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
 
 import { clients } from "../clients";
 import Client from "../components/Client";
@@ -22,18 +20,9 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import AddClientModal from "../components/modals/AddClientModal";
 import { AnimatedFAB } from "react-native-paper";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
-  const logoutHandler = async () => {
-    console.log("clicked");
-    await AsyncStorage.setItem("isLoggedIn", "").then(() => {
-      console.log("successfully removed token");
-    });
-    await AsyncStorage.setItem("authToken", "");
-    navigation.replace("loginUser");
-  };
-
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, 100);
   const translateY = diffClamp.interpolate({
@@ -44,6 +33,7 @@ const HomeScreen = () => {
   const [openModal, setOpenModal] = useState(false);
   const [totalClients, setTotalClients] = useState([]);
   const [isExtended, setIsExtended] = useState(true);
+  const [userData, setUserData] = useState("");
 
   const isIOS = Platform.OS === "ios";
 
@@ -58,9 +48,27 @@ const HomeScreen = () => {
   };
   const fabStyle = { right: 16 };
 
-  const getData = async () => {
+  const getUserData = async () => {
+    const token = await AsyncStorage.getItem("authToken");
+    // console.log(token);
+    axios
+      .post("http://10.0.2.2:8000/userdata", { token: token })
+      .then((res) => {
+        setUserData(res.data.userData);
+        getData(res.data.userData);
+        // console.log(res.data.userData);
+      });
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const getData = async (user) => {
     try {
-      const response = await axios.get("http://10.0.2.2:8000/client");
+      const id = user._id;
+      console.log(id);
+      const response = await axios.get(`http://10.0.2.2:8000/client/${id}`);
       const allClients = response.data.allClients;
       setTotalClients(allClients);
     } catch (error) {
@@ -68,9 +76,9 @@ const HomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
   const handleAddClient = (newClient) => {
     setTotalClients((prevClients) => [...prevClients, newClient]);
@@ -112,23 +120,17 @@ const HomeScreen = () => {
         <FlatList
           style={{
             paddingTop: 80,
-            borderBottomWidth: 0.5,
-            borderBottomColor: "#26282a",
+            // borderBottomWidth: 0.5,
+            // borderBottomColor: "#26282a",
           }}
           onScroll={(e) => {
             scrollY.setValue(e.nativeEvent.contentOffset.y);
             onScroll(e);
           }}
-          contentContainerStyle={{paddingBottom:80}}
+          contentContainerStyle={{ paddingBottom: 80 }}
           data={totalClients}
           renderItem={({ item }) => <Client client={item} />}
         />
-        {/* <Pressable
-          style={{ padding: 10, backgroundColor: "#2B9D64" }}
-          onPress={logoutHandler}
-        >
-          <Text style={{ color: "white" }}>Logout</Text>
-        </Pressable> */}
       </View>
       {/* <Pressable onPress={()=>{setOpenModal(true)}} style={styles.addClientBtn}>
           <Text style={{color:"white",fontSize:20,fontWeight:"600",textAlign:"center"}}>Add Client</Text>
@@ -152,11 +154,25 @@ const HomeScreen = () => {
           openModal={openModal}
           setOpenModal={setOpenModal}
           addClientHandler={handleAddClient}
+          userData={userData}
         />
       }
 
-      {totalClients.length <= 0 ? (
-        <View style={{width:300,height:180,backgroundColor:"#171819" ,marginVertical: "55%",alignItems:"center",justifyContent:"center",marginHorizontal:"13.5%",borderRadius:25,elevation:10,shadowColor:"#2B9D64"}}>
+      {/* {totalClients.length <= 0 ? (
+        <View
+          style={{
+            width: 300,
+            height: 180,
+            backgroundColor: "#171819",
+            marginVertical: "55%",
+            alignItems: "center",
+            justifyContent: "center",
+            marginHorizontal: "13.5%",
+            borderRadius: 25,
+            elevation: 10,
+            shadowColor: "#2B9D64",
+          }}
+        >
           <Text
             style={{
               color: "#2B9D64",
@@ -165,11 +181,10 @@ const HomeScreen = () => {
               textAlign: "center",
             }}
           >
-          You don't have any clients,
-           Please add a new client
+            You don't have any clients, Please add a new client
           </Text>
         </View>
-      ) : null}
+      ) : null} */}
     </SafeAreaView>
   );
 };

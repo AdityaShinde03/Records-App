@@ -67,10 +67,22 @@ const StackNavigator = () => {
     );
   }
 
-  const getData = () => {
-    const data = AsyncStorage.getItem("isLoggedIn");
-    console.log(data);
-    setIsLoggedIn(data);
+  const getData = async () => {
+    try {
+      const data = await AsyncStorage.getItem("isLoggedIn");
+      if (data !== null) {
+        console.log("is LoggedIn data is here", JSON.stringify(data));
+        setIsLoggedIn(JSON.parse(data)); // Parse only if necessary
+      } else {
+        setIsLoggedIn(false); // or true depending on your default behavior
+      }
+    } catch (error) {
+      console.error("Error reading isLoggedIn from AsyncStorage: ", error);
+      // Handle error appropriately
+    }
+
+    // console.log("IsLoggedIn Data is here",JSON.parse(data))
+    // setIsLoggedIn(data);
   };
 
   useEffect(() => {
@@ -79,9 +91,10 @@ const StackNavigator = () => {
 
   const LoginNav = () => {
     return (
-      <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="register" component={RegisterScreen} />
+        <Stack.Screen name="main" component={StackNav} />
       </Stack.Navigator>
     );
   };
@@ -90,11 +103,11 @@ const StackNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
-          <Stack.Screen name="main0" component={StackNav} />
+          <Stack.Screen name="main" component={StackNav} />
         ) : (
           <>
-            <Stack.Screen name="login" component={LoginScreen} />
-            <Stack.Screen name="register" component={RegisterScreen} />
+            <Stack.Screen name="loginUser" component={LoginNav} />
+            {/* <Stack.Screen name="register" component={RegisterScreen} /> */}
           </>
         )}
       </Stack.Navigator>

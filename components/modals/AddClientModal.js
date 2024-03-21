@@ -11,18 +11,20 @@ import InputComponent from "../InputComponent";
 import { useNavigation } from "@react-navigation/native";
 import { clients } from "../../clients";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AddClientModal = ({ openModal, setOpenModal, addClientHandler }) => {
+const AddClientModal = ({ openModal, setOpenModal, addClientHandler, userData }) => {
   const [clientName, setClientName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [clientMobileNumber, setClientMobileNumber] = useState("");
   const navigation = useNavigation();
-
   const addNewClientHandler = async () => {
+
     const client = {
       clientName: clientName,
       companyName: companyName,
       clientMobileNumber: clientMobileNumber,
+      createdByUser: userData._id
     };
     const response = await axios.post("http://10.0.2.2:8000/client", client);
     console.log(response.data);
