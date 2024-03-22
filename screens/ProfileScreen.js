@@ -101,7 +101,7 @@ const ProfileScreen = () => {
 
       <View style={{marginTop:30}}>
         <View style={{ flexDirection: "row", marginVertical: 20  }}>
-          <Text variant="headlineMedium" style={{ color: "gray" }}>
+          <Text variant="headlineSmall" style={{ color: "gray", fontWeight:"700" }}>
             Email ~{" "}
           </Text>
           <Text style={{ color: "violet" }} variant="headlineSmall">
@@ -110,12 +110,22 @@ const ProfileScreen = () => {
         </View>
         <Divider style={styles.dividerStyle} />
         <View style={{ flexDirection: "row", marginVertical: 20 }}>
-          <Text variant="headlineMedium" style={{ color: "gray" }}>
+          <Text variant="headlineSmall" style={{ color: "gray", fontWeight:"700" }}>
             Total Clients ~
           </Text>
           <Text style={{ color: "violet" }} variant="headlineSmall">
             {" "}
             {totalClients}
+          </Text>
+        </View>
+        <Divider style={styles.dividerStyle} />
+        <View style={{ flexDirection: "row", marginVertical: 20 }}>
+          <Text variant="headlineSmall" style={{ color: "gray", fontWeight:"700" }}>
+            Total Orders ~
+          </Text>
+          <Text style={{ color: "violet" }} variant="headlineSmall">
+            {" "}
+            {0}
           </Text>
         </View>
         <Divider style={styles.dividerStyle} />

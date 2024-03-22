@@ -153,11 +153,11 @@ const HomeScreen = () => {
                   {/* <SearchBar filterList={clients} /> */}
                   <Searchbar
                     style={{
-                      color: "white",
-                      width: "95%",
+                      width:"95%",
                       backgroundColor: "#0F0F0F",
                       borderWidth: 1,
                       borderColor: "#5D5D5D",
+                      color:"white",
                     }}
                     placeholder="Search your client"
                     placeholderTextColor="#5D5D5D"
@@ -165,6 +165,7 @@ const HomeScreen = () => {
                     cursorColor="#5D5D5D"
                     value={searchQuery}
                     onChangeText={handleSearch}
+                    iconColor="#2B9D64"
                   />
                 </Animated.View>
 
