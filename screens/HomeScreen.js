@@ -19,7 +19,7 @@ import Client from "../components/Client";
 import SearchBar from "../components/SearchBar";
 import { FontAwesome6 } from "@expo/vector-icons";
 import AddClientModal from "../components/modals/AddClientModal";
-import { AnimatedFAB } from "react-native-paper";
+import { AnimatedFAB, Searchbar } from "react-native-paper";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -36,6 +36,8 @@ const HomeScreen = () => {
   const [totalClients, setTotalClients] = useState([]);
   const [isExtended, setIsExtended] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredClients, setFilteredClients] = useState([]);
 
   const isIOS = Platform.OS === "ios";
 
@@ -53,7 +55,7 @@ const HomeScreen = () => {
   const getUserData = async () => {
     try {
       const token = await AsyncStorage.getItem("authToken");
-      
+
       const response = await axios.post("http://10.0.2.2:8000/userdata", {
         token,
       });
@@ -66,7 +68,6 @@ const HomeScreen = () => {
       console.error("Error fetching user data:", error);
       setLoading(false);
     }
-
   };
 
   useEffect(() => {
@@ -85,6 +86,28 @@ const HomeScreen = () => {
     }
   };
 
+  useEffect(() => {
+    filterClients();
+  }, [totalClients, searchQuery]);
+
+  const filterClients = () => {
+    if (searchQuery.trim() === "") {
+      setFilteredClients(totalClients);
+    } else {
+      const filtered = totalClients.filter((client) => {
+        return (
+          client.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          client.companyName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      });
+      setFilteredClients(filtered);
+    }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
   // useEffect(() => {
   //   getData();
   // }, []);
@@ -97,32 +120,53 @@ const HomeScreen = () => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#0F0F0F", position: "relative" }}
     >
-    {loading ? <View style={{flex:1 , alignItems:"center", justifyContent:"center"}}>
-      <ActivityIndicator size="large" color="#2B9D64" />
-    </View> :<>
-      {totalClients.length  ? <>
-      <View>
-        <Animated.View
-          style={{
-            alignItems: "center",
-            paddingTop: 8,
-            transform: [
-              {
-                translateY: translateY,
-              },
-            ],
-            zIndex: 100,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "#0F0F0F",
-          }}
+      {loading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <SearchBar filterList={clients} />
-        </Animated.View>
+          <ActivityIndicator size="large" color="#2B9D64" />
+        </View>
+      ) : (
+        <>
+          {totalClients.length ? (
+            <>
+              <View>
+                <Animated.View
+                  style={{
+                    alignItems: "center",
+                    paddingTop: 8,
+                    transform: [
+                      {
+                        translateY: translateY,
+                      },
+                    ],
+                    zIndex: 100,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: "#0F0F0F",
+                  }}
+                >
+                  {/* <SearchBar filterList={clients} /> */}
+                  <Searchbar
+                    style={{
+                      color: "white",
+                      width: "95%",
+                      backgroundColor: "#0F0F0F",
+                      borderWidth: 1,
+                      borderColor: "#5D5D5D",
+                    }}
+                    placeholder="Search your client"
+                    placeholderTextColor="#5D5D5D"
+                    selectionColor="#5D5D5D"
+                    cursorColor="#5D5D5D"
+                    value={searchQuery}
+                    onChangeText={handleSearch}
+                  />
+                </Animated.View>
 
-        {/* <View horizontal={true} style={{ marginLeft: 25 }}>
+                {/* <View horizontal={true} style={{ marginLeft: 25 }}>
           <Text
             style={{ color: "#868686", textAlign: "left", letterSpacing: 0.5 }}
           >
@@ -130,76 +174,78 @@ const HomeScreen = () => {
           </Text>
         </View> */}
 
-        <FlatList
-          style={{
-            paddingTop: 80,
-            // borderBottomWidth: 0.5,
-            // borderBottomColor: "#26282a",
-          }}
-          onScroll={(e) => {
-            scrollY.setValue(e.nativeEvent.contentOffset.y);
-            onScroll(e);
-          }}
-          contentContainerStyle={{ paddingBottom: 80 }}
-          data={totalClients}
-          renderItem={({ item }) => <Client client={item} />}
-        />
-      </View>
-      {/* <Pressable onPress={()=>{setOpenModal(true)}} style={styles.addClientBtn}>
+                <FlatList
+                  style={{
+                    paddingTop: 80,
+                    // borderBottomWidth: 0.5,
+                    // borderBottomColor: "#26282a",
+                  }}
+                  onScroll={(e) => {
+                    scrollY.setValue(e.nativeEvent.contentOffset.y);
+                    onScroll(e);
+                  }}
+                  contentContainerStyle={{ paddingBottom: 80 }}
+                  data={filteredClients}
+                  renderItem={({ item }) => <Client client={item} />}
+                  keyboardShouldPersistTaps={true}
+                />
+              </View>
+              {/* <Pressable onPress={()=>{setOpenModal(true)}} style={styles.addClientBtn}>
           <Text style={{color:"white",fontSize:20,fontWeight:"600",textAlign:"center"}}>Add Client</Text>
           <FontAwesome6 name="add" size={24} color="white" />
       </Pressable> */}
-      
-      </>:(
-        <View
-          style={{
-            position: "absolute",
-            width: 300,
-            height: 180,
-            backgroundColor: "#171819",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 25,
-            elevation: 10,
-            shadowColor: "#2B9D64",
-            top: "40%",
-            left: 48,
-          }}
-        >
-          <Text
-            style={{
-              color: "#2B9D64",
-              fontSize: 22,
-              fontWeight: "500",
-              textAlign: "center",
+            </>
+          ) : (
+            <View
+              style={{
+                position: "absolute",
+                width: 300,
+                height: 180,
+                backgroundColor: "#171819",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 25,
+                elevation: 10,
+                shadowColor: "#2B9D64",
+                top: "40%",
+                left: 48,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#2B9D64",
+                  fontSize: 22,
+                  fontWeight: "500",
+                  textAlign: "center",
+                }}
+              >
+                You don't have any clients, Please add a new client
+              </Text>
+            </View>
+          )}
+          <AnimatedFAB
+            style={[styles.fabStyle, fabStyle]}
+            color="white"
+            icon={"plus"}
+            label={"Add new client"}
+            extended={isExtended}
+            onPress={() => {
+              setOpenModal(true);
             }}
-          >
-            You don't have any clients, Please add a new client
-          </Text>
-        </View>
-      )}
-      <AnimatedFAB
-        style={[styles.fabStyle, fabStyle]}
-        color="white"
-        icon={"plus"}
-        label={"Add new client"}
-        extended={isExtended}
-        onPress={() => {
-          setOpenModal(true);
-        }}
-        visible={true}
-        iconMode={"static"}
-      />
+            visible={true}
+            iconMode={"static"}
+          />
 
-      {
-        <AddClientModal
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          addClientHandler={handleAddClient}
-          userData={userData}
-        />
-      }
-    </>}
+          {
+            <AddClientModal
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              addClientHandler={handleAddClient}
+              userData={userData}
+            />
+          }
+        </>
+      )}
     </SafeAreaView>
   );
 };
