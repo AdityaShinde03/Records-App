@@ -81,6 +81,8 @@ const HomeScreen = () => {
       const response = await axios.get(`http://10.0.2.2:8000/client/${id}`);
       const allClients = response.data.allClients;
       setTotalClients(allClients);
+      AsyncStorage.setItem("totalClients",allClients.length.toString()) // May be i change this line of code later...
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -187,7 +189,7 @@ const HomeScreen = () => {
                   contentContainerStyle={{ paddingBottom: 80 }}
                   data={filteredClients}
                   renderItem={({ item }) => <Client client={item} />}
-                  keyboardShouldPersistTaps={true}
+                  keyboardShouldPersistTaps="always"
                 />
               </View>
               {/* <Pressable onPress={()=>{setOpenModal(true)}} style={styles.addClientBtn}>
