@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Animated,
   FlatList,
   Image,
@@ -30,10 +31,11 @@ const HomeScreen = () => {
     outputRange: [0, -100],
   });
 
+  const [loading, setLoading] = useState(true); // Track whether data is being fetched
   const [openModal, setOpenModal] = useState(false);
   const [totalClients, setTotalClients] = useState([]);
   const [isExtended, setIsExtended] = useState(true);
-  const [userData, setUserData] = useState("");
+  const [userData, setUserData] = useState(null);
 
   const isIOS = Platform.OS === "ios";
 
@@ -49,15 +51,22 @@ const HomeScreen = () => {
   const fabStyle = { right: 16 };
 
   const getUserData = async () => {
-    const token = await AsyncStorage.getItem("authToken");
-    // console.log(token);
-    axios
-      .post("http://10.0.2.2:8000/userdata", { token: token })
-      .then((res) => {
-        setUserData(res.data.userData);
-        getData(res.data.userData);
-        // console.log(res.data.userData);
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      
+      const response = await axios.post("http://10.0.2.2:8000/userdata", {
+        token,
       });
+      const userData = response.data.userData;
+      setUserData(userData);
+      getData(userData);
+      console.log(userData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setLoading(false);
+    }
+
   };
 
   useEffect(() => {
@@ -88,6 +97,10 @@ const HomeScreen = () => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#0F0F0F", position: "relative" }}
     >
+    {loading ? <View style={{flex:1 , alignItems:"center", justifyContent:"center"}}>
+      <ActivityIndicator size="large" color="#2B9D64" />
+    </View> :<>
+      {totalClients.length  ? <>
       <View>
         <Animated.View
           style={{
@@ -136,6 +149,35 @@ const HomeScreen = () => {
           <Text style={{color:"white",fontSize:20,fontWeight:"600",textAlign:"center"}}>Add Client</Text>
           <FontAwesome6 name="add" size={24} color="white" />
       </Pressable> */}
+      
+      </>:(
+        <View
+          style={{
+            position: "absolute",
+            width: 300,
+            height: 180,
+            backgroundColor: "#171819",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+            elevation: 10,
+            shadowColor: "#2B9D64",
+            top: "40%",
+            left: 48,
+          }}
+        >
+          <Text
+            style={{
+              color: "#2B9D64",
+              fontSize: 22,
+              fontWeight: "500",
+              textAlign: "center",
+            }}
+          >
+            You don't have any clients, Please add a new client
+          </Text>
+        </View>
+      )}
       <AnimatedFAB
         style={[styles.fabStyle, fabStyle]}
         color="white"
@@ -157,34 +199,7 @@ const HomeScreen = () => {
           userData={userData}
         />
       }
-
-      {/* {totalClients.length <= 0 ? (
-        <View
-          style={{
-            width: 300,
-            height: 180,
-            backgroundColor: "#171819",
-            marginVertical: "55%",
-            alignItems: "center",
-            justifyContent: "center",
-            marginHorizontal: "13.5%",
-            borderRadius: 25,
-            elevation: 10,
-            shadowColor: "#2B9D64",
-          }}
-        >
-          <Text
-            style={{
-              color: "#2B9D64",
-              fontSize: 22,
-              fontWeight: "500",
-              textAlign: "center",
-            }}
-          >
-            You don't have any clients, Please add a new client
-          </Text>
-        </View>
-      ) : null} */}
+    </>}
     </SafeAreaView>
   );
 };

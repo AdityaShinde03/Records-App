@@ -7,7 +7,8 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
 const Client = require("./models/client");
-const { useId } = require("react");
+
+require('dotenv').config();
 
 const app = express();
 const PORT = 8000;
