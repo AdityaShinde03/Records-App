@@ -17,8 +17,9 @@ const clientSchema = new mongoose.Schema({
     //     ref:"order"
     // },
     createdByUser:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"client"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 },{timestamps:true});
 

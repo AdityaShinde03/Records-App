@@ -33,7 +33,7 @@ const HomeScreen = () => {
 
   const [loading, setLoading] = useState(true); // Track whether data is being fetched
   const [openModal, setOpenModal] = useState(false);
-  const [totalClients, setTotalClients] = useState([]);
+  const [totalClients, setTotalClients] = useState(null);
   const [isExtended, setIsExtended] = useState(true);
   const [userData, setUserData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,7 +122,7 @@ const HomeScreen = () => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#0F0F0F", position: "relative" }}
     >
-      {loading ? (
+      {totalClients === null ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >

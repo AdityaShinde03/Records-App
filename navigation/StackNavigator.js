@@ -11,17 +11,23 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import ProfileScreen from "../screens/ProfileScreen";
 import ClientDetailsScreen from "../screens/ClientDetailsScreen";
+import OrderDetailsScreen from "../screens/OrderDetailsScreen";
+
+
+
 
 const StackNavigator = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
 
+
   function StackNav() {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="main" component={BottomTabs} />
         <Stack.Screen name="clientDetails" component={ClientDetailsScreen} />
+        <Stack.Screen name="orderDetails" component={OrderDetailsScreen} />
         <Stack.Screen name="loginUser" component={LoginNav} />
       </Stack.Navigator>
     );

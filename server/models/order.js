@@ -1,16 +1,49 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-// Order Date : 1/3/24
-// Party Name : Shree Kuldevi Auto parts 
-// Types Of Spring  : Compression spring 
-// Wire Dia : 16
-// Outer Dia (OD) : 105
-// Number Of Turns  : 10
-// Length  : 14 inch
-// Qty : 75
-// Dispatched Date : 
-// Transport Name : 
-// Remark : 
-
-})
+    orderDate: {
+        type: Date,
+        // required: true,
+        default:Date.now
+    },
+    partyName: {
+        type: mongoose.Schema.Types.ObjectId, // Reference to the Client model
+        ref: 'Client', // Refers to the Client model
+        required: true
+    },
+    typesOfSpring: {
+        type: String,
+        required: true
+    },
+    wireDia: {
+        type: Number,
+        required: true
+    },
+    outerDia: {
+        type: Number,
+        required: true
+    },
+    numberOfTurns: {
+        type: Number,
+        required: true
+    },
+    length: {
+        type: String, // Assuming length can have non-numeric values like '14 inch'
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    dispatchedDate: {
+        type: Date
+    },
+    transportName: {
+        type: String
+    },
+    remark: {
+        type: String
+    }
+});
+const Order = mongoose.model("Order",orderSchema);
+module.exports = Order;

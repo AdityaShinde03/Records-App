@@ -33,6 +33,7 @@ const Client = ({ client }) => {
       key={client._id}
       onPress={() => {
         navigation.navigate("clientDetails", {
+          clientId:client._id,
           clientName: client.clientName,
           companyName: client.companyName,
         });

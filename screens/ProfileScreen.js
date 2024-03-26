@@ -104,7 +104,7 @@ const ProfileScreen = () => {
           <Text variant="headlineSmall" style={{ color: "gray", fontWeight:"700" }}>
             Email ~{" "}
           </Text>
-          <Text style={{ color: "violet" }} variant="headlineSmall">
+          <Text style={{ color: "#2B9D64" }} variant="headlineSmall">
             {userData.email}
           </Text>
         </View>
@@ -113,17 +113,17 @@ const ProfileScreen = () => {
           <Text variant="headlineSmall" style={{ color: "gray", fontWeight:"700" }}>
             Total Clients ~
           </Text>
-          <Text style={{ color: "violet" }} variant="headlineSmall">
+          <Text style={{ color: "#2B9D64" }} variant="headlineSmall">
             {" "}
             {totalClients}
           </Text>
         </View>
         <Divider style={styles.dividerStyle} />
-        <View style={{ flexDirection: "row", marginVertical: 20 }}>
+        <View style={{ flexDirection: "row", marginVertical: 20}}>
           <Text variant="headlineSmall" style={{ color: "gray", fontWeight:"700" }}>
             Total Orders ~
           </Text>
-          <Text style={{ color: "violet" }} variant="headlineSmall">
+          <Text style={{ color: "#2B9D64" }} variant="headlineSmall">
             {" "}
             {0}
           </Text>
@@ -160,6 +160,6 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   dividerStyle:{
-    backgroundColor:"#26282a"
+    backgroundColor:"#26282a",
   }
 });

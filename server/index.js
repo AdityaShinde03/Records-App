@@ -7,6 +7,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
 const Client = require("./models/client");
+const Order = require("./models/order");
 
 require('dotenv').config();
 
@@ -130,7 +131,10 @@ app.get("/client/:id",async(req,res)=>{
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: "Invalid User ID format" });
     }
-    const clientsOfThatUser = await Client.find({ createdByUser: userId });
+    // const clientsOfThatUser = await Client.find({ createdByUser: userId });
+    // console.log(clientsOfThatUser);
+    const clientsOfThatUser = await Client.find({ createdByUser: userId }).populate('createdByUser');
+
     console.log(clientsOfThatUser);
     res.status(200).send({ allClients: clientsOfThatUser });
   } catch (error) {
@@ -164,6 +168,58 @@ app.post("/client", async(req,res)=>{
     return res.status(500).json({ message: "Adding new client failed!!!" });
   }
 });
+
+
+// Add new Order *********************************************
+
+app.post("/order",async(req,res)=>{
+  try {
+    // Extract order data from the request body
+    const { orderDate, partyName, typesOfSpring, wireDia, outerDia, numberOfTurns, length, quantity, dispatchedDate, transportName, remark } = req.body;
+
+    // const client = await Client.findById(partyName);
+    // if (!client) {
+    //   return res.status(404).json({ error: 'Client not found' });
+    // }
+
+    // Create a new instance of the Order model with the extracted data
+    const newOrder = await Order.create({
+      orderDate,
+      partyName,
+      typesOfSpring,
+      wireDia,
+      outerDia,
+      numberOfTurns,
+      length,
+      quantity,
+      dispatchedDate,
+      transportName,
+      remark
+    });
+    res.status(201).json(newOrder);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({ error: 'Error creating order' });
+  }
+});
+
+// Get All Orders By ID **************************************
+
+app.get("/order/:partyName",async(req,res)=>{
+  try {
+    // Extract partyName from the request parameters
+    const partyName = req.params.partyName;
+
+    // Perform a query to find orders by partyName
+    const orders = await Order.find({ partyName });
+
+    // Return the fetched orders
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching orders by partyName:', error);
+    res.status(500).json({ error: 'Error fetching orders by partyName' });
+  }
+})
 
 app.listen(PORT, () => {
   console.log("server is up and running on port:" + PORT);

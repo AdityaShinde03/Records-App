@@ -1,18 +1,111 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { useRoute } from '@react-navigation/native'
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Button } from "react-native-paper";
+import { Appbar } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Order from "../components/Order";
+import axios from "axios";
 
 const ClientDetailsScreen = () => {
   const route = useRoute();
-  const {clientName,companyName} = route.params;
+  const navigation = useNavigation();
+  const { clientId, clientName, companyName } = route.params;
+
+  const [order, setOrder] = useState([]);
+
+  const getOrderData = async () => {
+    try {
+      const response = await axios.get(
+        `http://10.0.2.2:8000/order/${clientId}`
+      );
+
+      console.log(response.data);
+      setOrder(response.data);
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getOrderData();
+  }, []);
+
   return (
-    <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#0F0F0F"}}>
-      <Text style={{color:"white"}}>{clientName}</Text>
-      <Text style={{color:"white"}}>{companyName}</Text>
-    </View>
-  )
-}
+    <SafeAreaView
+      style={{ flex: 1, alignItems: "center", backgroundColor: "#0F0F0F" }}
+    >
+      <Appbar.Header style={{ width: "100%", backgroundColor: "#0F0F0F" }}>
+        <Appbar.BackAction
+          color="white"
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Appbar.Content color="#2B9D64" title={clientName} />
+        {/* <Appbar.Action icon="calendar" onPress={() => {}} />
+    <Appbar.Action icon="magnify" onPress={() => {}} /> */}
+      </Appbar.Header>
 
-export default ClientDetailsScreen
+      <View
+        style={{
+          backgroundColor: "#2B9D64",
+          width: "100%",
+          alignItems: "center",
+          paddingVertical: 3,
+        }}
+      >
+        <Text style={{ fontSize: 18, color: "white", textAlign: "center" }}>
+          {companyName}
+        </Text>
+      </View>
+      <FlatList
+      style={{width:"100%"}}
+      contentContainerStyle={{gap:10,marginTop:20,paddingBottom:30}}
+        data={order}
+        renderItem={({ item }) => <Order order={item} />}
+        keyboardShouldPersistTaps="always"
+      />
+      <Pressable
+        style={{
+          backgroundColor: "#2B9D64",
+          padding: 14,
+          width: 160,
+          borderRadius: 10,
+          position:"absolute",
+          bottom:20,
+          right:10
+        }}
+        onPress={() =>
+          navigation.navigate("orderDetails", {
+            clientId: clientId,
+            clientName: clientName,
+            companyName: companyName,
+          })
+        }
+      >
+        <Text
+          style={{
+            color: "white",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: "600",
+          }}
+        >
+          Create Order
+        </Text>
+      </Pressable>
+    </SafeAreaView>
+  );
+};
 
-const styles = StyleSheet.create({})
+export default ClientDetailsScreen;
+
+const styles = StyleSheet.create({});
