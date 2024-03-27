@@ -9,7 +9,7 @@ const User = require("./models/user");
 const Client = require("./models/client");
 const Order = require("./models/order");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 const PORT = 8000;
@@ -81,25 +81,24 @@ app.post("/login", async (req, res) => {
         { userId: user._id, userEmail: user.email },
         JWT_SECRET
       );
-      return res.status(200).json({token:token})
+      return res.status(200).json({ token: token });
     }
   } catch (error) {
-   return res.status(500).json({ message: "Login Failed!!!" });
+    return res.status(500).json({ message: "Login Failed!!!" });
   }
 });
 
 // Get User Data ********************************************
 
-app.post("/userdata",async(req,res)=>{
-  const {token} = req.body;
+app.post("/userdata", async (req, res) => {
+  const { token } = req.body;
 
-  try{
-    const user = jwt.verify(token,JWT_SECRET);
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
     const userId = user.userId;
 
-    console.log("route working")
-    console.log(userId)
-  
+    console.log("route working");
+    console.log(userId);
 
     const userData = await User.findOne({ _id: userId });
     if (userData) {
@@ -107,22 +106,22 @@ app.post("/userdata",async(req,res)=>{
     } else {
       return res.send({ status: "error", message: "User not found" });
     }
-  }catch(error){
-    return res.send({error:error});
+  } catch (error) {
+    return res.send({ error: error });
   }
-})
+});
 
 // Get All Added Clients ************************************
 
-app.get("/client",async(req,res)=>{
+app.get("/client", async (req, res) => {
   const allClients = await Client.find({});
-  return res.send({allClients})
-})
+  return res.send({ allClients });
+});
 
-app.get("/client/:id",async(req,res)=>{
+app.get("/client/:id", async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId)
+    console.log(userId);
     if (!userId) {
       return res.status(400).json({ error: "User ID is missing" });
     }
@@ -133,7 +132,9 @@ app.get("/client/:id",async(req,res)=>{
     }
     // const clientsOfThatUser = await Client.find({ createdByUser: userId });
     // console.log(clientsOfThatUser);
-    const clientsOfThatUser = await Client.find({ createdByUser: userId }).populate('createdByUser');
+    const clientsOfThatUser = await Client.find({
+      createdByUser: userId,
+    }).populate("createdByUser");
 
     console.log(clientsOfThatUser);
     res.status(200).send({ allClients: clientsOfThatUser });
@@ -141,41 +142,53 @@ app.get("/client/:id",async(req,res)=>{
     console.error("Error fetching clients:", error);
     res.status(500).json({ error: "Error fetching clients" });
   }
-})
+});
 
 // Add New Client Route ********************************************************
-app.post("/client", async(req,res)=>{
+app.post("/client", async (req, res) => {
   try {
-    const {clientName,companyName,clientMobileNumber, createdByUser} = req.body;
-    
+    const { clientName, companyName, clientMobileNumber, createdByUser } =
+      req.body;
+
     const existingCompany = await User.findOne({ companyName: companyName });
 
     // if (existingCompany) {
     //   return res.status(400).json({ message: "Client with same company name already added!!!" });
-    // } 
+    // }
 
-   const newClient = await Client.create({
-      clientName:clientName,
+    const newClient = await Client.create({
+      clientName: clientName,
       companyName: companyName,
       mobileNumber: clientMobileNumber,
-      createdByUser: createdByUser
+      createdByUser: createdByUser,
     });
     return res
       .status(200)
-      .json({ message: "Client added successfully!!!",newClient:newClient });
-  }catch(error){
+      .json({ message: "Client added successfully!!!", newClient: newClient });
+  } catch (error) {
     console.log("Error while adding new client", error);
     return res.status(500).json({ message: "Adding new client failed!!!" });
   }
 });
 
-
 // Add new Order *********************************************
 
-app.post("/order",async(req,res)=>{
+app.post("/order", async (req, res) => {
   try {
     // Extract order data from the request body
-    const { orderDate, partyName, typesOfSpring, wireDia, outerDia, numberOfTurns, length, quantity, dispatchedDate, transportName, remark } = req.body;
+    const {
+      orderDate,
+      partyName,
+      typesOfSpring,
+      wireDia,
+      outerDia,
+      numberOfTurns,
+      length,
+      quantity,
+      dispatchedDate,
+      transportName,
+      remark,
+    } = req.body;
 
     // const client = await Client.findById(partyName);
     // if (!client) {
@@ -194,18 +207,20 @@ app.post("/order",async(req,res)=>{
       quantity,
       dispatchedDate,
       transportName,
-      remark
+      remark,
     });
-    res.status(201).json(newOrder);
+    res
+      .status(201)
+      .json({ message: "new Order added successfully!!!", newOrder: newOrder });
   } catch (error) {
-    console.error('Error creating order:', error);
-    res.status(500).json({ error: 'Error creating order' });
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Error creating order" });
   }
 });
 
 // Get All Orders By ID **************************************
 
-app.get("/order/:partyName",async(req,res)=>{
+app.get("/order/:partyName", async (req, res) => {
   try {
     // Extract partyName from the request parameters
     const partyName = req.params.partyName;
@@ -216,10 +231,10 @@ app.get("/order/:partyName",async(req,res)=>{
     // Return the fetched orders
     res.status(200).json(orders);
   } catch (error) {
-    console.error('Error fetching orders by partyName:', error);
-    res.status(500).json({ error: 'Error fetching orders by partyName' });
+    console.error("Error fetching orders by partyName:", error);
+    res.status(500).json({ error: "Error fetching orders by partyName" });
   }
-})
+});
 
 app.listen(PORT, () => {
   console.log("server is up and running on port:" + PORT);

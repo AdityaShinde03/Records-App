@@ -38,6 +38,19 @@ const ClientDetailsScreen = () => {
     getOrderData();
   }, []);
 
+  const handelAddNewOrder = async(newOrder)=>{
+    // try {
+    //   const updatedOrders = [...order, newOrder];
+    //   setOrder(updatedOrders);
+
+    //   // Pass the new order back to the previous screen
+    //   // navigation.navigate("clientDetails", { newOrder: newOrder });
+    // } catch (error) {
+    //   console.error("Error adding new order:", error);
+    // }
+    setOrder((prevOrder)=>[...prevOrder,newOrder])
+  }
+
   return (
     <SafeAreaView
       style={{ flex: 1, alignItems: "center", backgroundColor: "#0F0F0F" }}
@@ -69,7 +82,7 @@ const ClientDetailsScreen = () => {
       <FlatList
       style={{width:"100%"}}
       contentContainerStyle={{gap:10,marginTop:20,paddingBottom:30}}
-        data={order}
+        data={order.reverse()}
         renderItem={({ item }) => <Order order={item} />}
         keyboardShouldPersistTaps="always"
       />
@@ -88,6 +101,7 @@ const ClientDetailsScreen = () => {
             clientId: clientId,
             clientName: clientName,
             companyName: companyName,
+            handelAddNewOrder:handelAddNewOrder
           })
         }
       >
