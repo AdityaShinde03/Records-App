@@ -13,13 +13,16 @@ import { Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Order from "../components/Order";
 import axios from "axios";
+import { useOrderContext } from "../contexts/orderContext";
+
 
 const ClientDetailsScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { clientId, clientName, companyName } = route.params;
 
-  const [order, setOrder] = useState([]);
+  // const [order, setOrder] = useState([]);
+  const {order, addNewOrder, setNewOrder} = useOrderContext();
 
   const getOrderData = async () => {
     try {
@@ -28,7 +31,7 @@ const ClientDetailsScreen = () => {
       );
 
       console.log(response.data);
-      setOrder(response.data);
+      setNewOrder(response.data);
     } catch (error) {
       console.error("Error fetching order data:", error);
     }
@@ -38,18 +41,21 @@ const ClientDetailsScreen = () => {
     getOrderData();
   }, []);
 
-  const handelAddNewOrder = async(newOrder)=>{
-    // try {
-    //   const updatedOrders = [...order, newOrder];
-    //   setOrder(updatedOrders);
+  console.log("This is orders from context",order)
+  console.log(typeof(order))
 
-    //   // Pass the new order back to the previous screen
-    //   // navigation.navigate("clientDetails", { newOrder: newOrder });
-    // } catch (error) {
-    //   console.error("Error adding new order:", error);
-    // }
-    setOrder((prevOrder)=>[...prevOrder,newOrder])
-  }
+  // const handelAddNewOrder = async(newOrder)=>{
+  //   try {
+  //     const updatedOrders = [...order, newOrder];
+  //     setOrder(updatedOrders);
+
+  //     // Pass the new order back to the previous screen
+  //     navigation.navigate("clientDetails", { newOrder: newOrder });
+  //   } catch (error) {
+  //     console.error("Error adding new order:", error);
+  //   }
+  //   // setOrder((prevOrder)=>[...prevOrder,newOrder]);
+  // }
 
   return (
     <SafeAreaView
@@ -63,8 +69,6 @@ const ClientDetailsScreen = () => {
           }}
         />
         <Appbar.Content color="#2B9D64" title={clientName} />
-        {/* <Appbar.Action icon="calendar" onPress={() => {}} />
-    <Appbar.Action icon="magnify" onPress={() => {}} /> */}
       </Appbar.Header>
 
       <View
@@ -101,7 +105,7 @@ const ClientDetailsScreen = () => {
             clientId: clientId,
             clientName: clientName,
             companyName: companyName,
-            handelAddNewOrder:handelAddNewOrder
+            // handelAddNewOrder:handelAddNewOrder
           })
         }
       >

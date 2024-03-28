@@ -1,10 +1,12 @@
-import StackNavigator from './navigation/StackNavigator';
+import StackNavigator from "./navigation/StackNavigator";
+import { OrderProvider } from "./contexts/orderContext";
 
 export default function App() {
   return (
     <>
-      <StackNavigator />
+      <OrderProvider>
+        <StackNavigator />
+      </OrderProvider>
     </>
   );
 }
-
