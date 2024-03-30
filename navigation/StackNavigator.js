@@ -12,6 +12,7 @@ import { Entypo } from "@expo/vector-icons";
 import ProfileScreen from "../screens/ProfileScreen";
 import ClientDetailsScreen from "../screens/ClientDetailsScreen";
 import OrderDetailsScreen from "../screens/OrderDetailsScreen";
+import SingleOrderDetailsScreen from "../screens/SingleOrderDetailsScreen";
 
 
 
@@ -28,6 +29,7 @@ const StackNavigator = () => {
         <Stack.Screen name="main" component={BottomTabs} />
         <Stack.Screen name="clientDetails" component={ClientDetailsScreen} />
         <Stack.Screen name="orderDetails" component={OrderDetailsScreen} />
+        <Stack.Screen name="singleOrderDetails" component={SingleOrderDetailsScreen} />
         <Stack.Screen name="loginUser" component={LoginNav} />
       </Stack.Navigator>
     );

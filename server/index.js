@@ -177,7 +177,7 @@ app.post("/order", async (req, res) => {
   try {
     // Extract order data from the request body
     const {
-      orderDate,
+      // orderDate,
       partyName,
       typesOfSpring,
       wireDia,
@@ -197,7 +197,7 @@ app.post("/order", async (req, res) => {
 
     // Create a new instance of the Order model with the extracted data
     const newOrder = await Order.create({
-      orderDate,
+      // orderDate,
       partyName,
       typesOfSpring,
       wireDia,

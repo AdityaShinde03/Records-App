@@ -25,7 +25,7 @@ const OrderDetailsScreen = () => {
     numberOfTurns: "",
     lengthOfSpring: "",
     quantity: "",
-    dispatchDate: null,
+    dispatchedDate: null,
     transportName: "",
     remark: "",
   });
@@ -53,7 +53,7 @@ const OrderDetailsScreen = () => {
       if (Platform.OS === "android") {
         toggleDatePicker();
         setDispatchDate(formatDate(currentDate));
-        handleChange("dispatchDate", currentDate.toDateString());
+        handleChange("dispatchedDate", currentDate.toDateString());
       }
     } else {
       toggleDatePicker();
@@ -76,7 +76,7 @@ const OrderDetailsScreen = () => {
   const handleSaveOrder = async () => {
     try {
       const orderDetails = {
-        orderDate: date,
+        // orderDate: Date.now(),
         partyName: clientId,
         typesOfSpring: formValues.typeOfSpring,
         wireDia: formValues.wireDiameter,
@@ -84,7 +84,7 @@ const OrderDetailsScreen = () => {
         numberOfTurns: formValues.numberOfTurns,
         length: formValues.lengthOfSpring,
         quantity: formValues.quantity,
-        dispatchDate: formValues.dispatchDate,
+        dispatchedDate: formValues.dispatchedDate,
         transportName: formValues.transportName,
         remark: formValues.remark,
       };
@@ -116,7 +116,7 @@ const OrderDetailsScreen = () => {
     <SafeAreaView style={{ backgroundColor: "#0F0F0F", flex: 1 }}>
       <Appbar.Header style={{ width: "100%", backgroundColor: "#0F0F0F" }}>
         <Appbar.BackAction
-          color="white"
+          color="gray"
           onPress={() => {
             navigation.goBack();
           }}

@@ -42,7 +42,6 @@ const ClientDetailsScreen = () => {
   }, []);
 
   console.log("This is orders from context",order)
-  console.log(typeof(order))
 
   // const handelAddNewOrder = async(newOrder)=>{
   //   try {
@@ -63,7 +62,7 @@ const ClientDetailsScreen = () => {
     >
       <Appbar.Header style={{ width: "100%", backgroundColor: "#0F0F0F" }}>
         <Appbar.BackAction
-          color="white"
+          color="gray"
           onPress={() => {
             navigation.goBack();
           }}
@@ -85,7 +84,7 @@ const ClientDetailsScreen = () => {
       </View>
       <FlatList
       style={{width:"100%"}}
-      contentContainerStyle={{gap:10,marginTop:20,paddingBottom:30}}
+      contentContainerStyle={{gap:10,marginTop:20,paddingBottom:30,paddingHorizontal:8,paddingTop:10}}
         data={order.reverse()}
         renderItem={({ item }) => <Order order={item} />}
         keyboardShouldPersistTaps="always"
