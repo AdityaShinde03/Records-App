@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -9,10 +10,9 @@ const User = require("./models/user");
 const Client = require("./models/client");
 const Order = require("./models/order");
 
-require("dotenv").config();
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.urlencoded({ extended: true }));
@@ -63,7 +63,7 @@ function secretKeyGenerator() {
   return secret;
 }
 
-const JWT_SECRET = "@Super$Aditya";
+// const JWT_SECRET = "@Super$Aditya";
 
 // login Route ****************************************************************
 app.post("/login", async (req, res) => {
@@ -94,7 +94,7 @@ app.post("/userdata", async (req, res) => {
   const { token } = req.body;
 
   try {
-    const user = jwt.verify(token, JWT_SECRET);
+    const user = jwt.verify(token, process.env.JWT_SECRET);
     const userId = user.userId;
 
     console.log("route working");
