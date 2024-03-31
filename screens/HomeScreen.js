@@ -56,7 +56,7 @@ const HomeScreen = () => {
     try {
       const token = await AsyncStorage.getItem("authToken");
 
-      const response = await axios.post("http://10.0.2.2:8000/userdata", {
+      const response = await axios.post("https://records-app-0vuo.onrender.com/userdata", {
         token,
       });
       const userData = response.data.userData;
@@ -78,7 +78,7 @@ const HomeScreen = () => {
     try {
       const id = user._id;
       console.log(id);
-      const response = await axios.get(`http://10.0.2.2:8000/client/${id}`);
+      const response = await axios.get(`https://records-app-0vuo.onrender.com/client/${id}`);
       const allClients = response.data.allClients;
       setTotalClients(allClients);
       AsyncStorage.setItem("totalClients",allClients.length.toString()) // May be i change this line of code later...

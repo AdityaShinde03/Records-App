@@ -32,6 +32,12 @@ mongoose
     console.log("Failed to connect to MongoDB", err);
   });
 
+// Home Route ************************************************
+
+app.get("/",(req,res)=>{
+  return res.send("<h1>Records Backend is working</h1>");
+});
+
 // Register Route **************************************************************
 app.post("/register", async (req, res) => {
   try {

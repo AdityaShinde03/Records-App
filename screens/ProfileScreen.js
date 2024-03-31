@@ -50,7 +50,7 @@ const ProfileScreen = () => {
     const token = await AsyncStorage.getItem("authToken");
     // console.log(token);
     axios
-      .post("http://10.0.2.2:8000/userdata", { token: token })
+      .post("https://records-app-0vuo.onrender.com/userdata", { token: token })
       .then((res) => {
         setUserData(res.data.userData);
         // console.log(res.data.userData);

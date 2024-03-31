@@ -34,7 +34,7 @@ const RegisterScreen = () => {
     }
 
     // "https://15e5-2401-4900-1c80-2f42-b08a-9344-42cc-6bdd.ngrok-free.app/register"
-    axios.post("http://10.0.2.2:8000/register",user).then((response)=>{
+    axios.post("https://records-app-0vuo.onrender.com/register",user).then((response)=>{
       Alert.alert(
         "Registration Successfull",
         "you have registered successfully"

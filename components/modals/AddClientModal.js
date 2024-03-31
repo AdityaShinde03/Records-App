@@ -26,7 +26,7 @@ const AddClientModal = ({ openModal, setOpenModal, addClientHandler, userData })
       clientMobileNumber: clientMobileNumber,
       createdByUser: userData._id
     };
-    const response = await axios.post("http://10.0.2.2:8000/client", client);
+    const response = await axios.post("https://records-app-0vuo.onrender.com/client", client);
     console.log(response.data);
     addClientHandler(response.data.newClient);
     setClientName("");

@@ -31,7 +31,7 @@ const LoginScreen = () => {
       password: password,
     };
     axios
-      .post("http://10.0.2.2:8000/login", user)
+      .post("https://records-app-0vuo.onrender.com/login", user)
       .then((res) => {
         console.log(res);
         const token = res.data.token;

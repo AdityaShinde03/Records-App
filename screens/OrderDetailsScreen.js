@@ -89,7 +89,7 @@ const OrderDetailsScreen = () => {
         remark: formValues.remark,
       };
       const response = await axios.post(
-        "http://10.0.2.2:8000/order",
+        "https://records-app-0vuo.onrender.com/order",
         orderDetails
       );
 
